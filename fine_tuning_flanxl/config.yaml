@@ -1,0 +1,17 @@
+paths:
+  data_path: data/
+  data_file: recipe_qa_augmented_dataset.pickle
+#  data_file: wizard_of_tasks_cooking_finetuning_df.pickle
+#  data_file: recipe_qa.pickle
+#  data_file: tacobot_v1_combined_train_test (1).pickle
+  saved_model_path: saved_model/
+  preprocessed_data_path: preprocessed_data_files
+  data_split_required: 1
+
+model:
+  model_name: google/flan-t5-large
+  batch_size: 1
+
+train:
+  num_epochs: 20
+  num_gpus: 4

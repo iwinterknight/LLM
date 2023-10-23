@@ -1,0 +1,50 @@
+#!/bin/bash
+#SBATCH --gpus-per-node=4
+#SBATCH --time=160:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=22
+#SBATCH --output=tacoqa_3B
+#SBATCH --account=PAA0201
+
+ifconfig
+SIF_IMAGE=/users/PAS2348/winter/Projects/Taskbot_Challenge/TacoQA_Alt/osc/tacoqa.sif
+singularity exec --nv $SIF_IMAGE bash -c "\
+export PYTHONNOUSERSITE=1;
+export NCCL_SOCKET_IFNAME=ib0;
+export HOME=/tmp/$USER;
+CUDA_VISIBLE_DEVICES=0,1,2,3
+cd /users/PAS2348/winter/Projects/Taskbot_Challenge/TacoQA_Alt/;
+deepspeed --num_gpus=4 scripts/run_seq2seq_deepspeed.py \
+    --model_id google/flan-t5-xl \
+    --checkpoint_dir /users/PAS2348/winter/Projects/Taskbot_Challenge/TacoQA_Alt/flan-t5-xl/checkpoint-106/ \
+    --dataset_path /users/PAS2348/winter/Projects/Taskbot_Challenge/TacoQA_Alt/data/finetuning_data/ \
+    --epochs 40 \
+    --per_device_train_batch_size 8 \
+    --per_device_eval_batch_size 8 \
+    --generation_max_length 100 \
+    --lr 1e-4 \
+    --deepspeed ds_flan_t5_z3_config_bf16.json 
+"
+
+
+
+# deepspeed --num_gpus=4 scripts/run_seq2seq_deepspeed.py \
+#     --model_id google/flan-t5-xl \
+#     --dataset_path /users/PAS2348/winter/Projects/Taskbot_Challenge/TacoQA_Alt/data/finetuning_data/ \
+#     --epochs 10 \
+#     --per_device_train_batch_size 8 \
+#     --per_device_eval_batch_size 8 \
+#     --generation_max_length 100 \
+#     --lr 1e-4 \
+#     --deepspeed ds_flan_t5_z3_config_bf16.json 
+
+# deepspeed --num_gpus=4 scripts/run_seq2seq_deepspeed.py \
+#     --model_id google/flan-t5-xl \
+#     --checkpoint_dir /users/PAS2348/winter/Projects/Taskbot_Challenge/TacoQA_Alt/flan-t5-xl/checkpoint-5742/ \
+#     --dataset_path /users/PAS2348/winter/Projects/Taskbot_Challenge/TacoQA_Alt/data/finetuning_data/ \
+#     --epochs 10 \
+#     --per_device_train_batch_size 8 \
+#     --per_device_eval_batch_size 8 \
+#     --generation_max_length 100 \
+#     --lr 1e-4 \
+#     --deepspeed ds_flan_t5_z3_config_bf16.json 

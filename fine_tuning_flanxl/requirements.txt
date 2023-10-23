@@ -1,0 +1,6 @@
+pip install torch --extra-index-url https://download.pytorch.org/whl/cu116 --upgrade
+pip install "transformers==4.26.0" "datasets==2.9.0" "accelerate==0.16.0" "evaluate==0.4.0" --upgrade
+pip install "deepspeed==0.8.0" ninja --upgrade
+pip install rouge-score nltk py7zr tensorboard
+
+model_id = "google/flan-t5-xxl"
